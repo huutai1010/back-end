@@ -1,0 +1,68 @@
+﻿version: "3.4"
+name: "etravel"
+services:
+  sqldb:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    user: root
+    container_name: sqldb
+    restart: always
+    environment:
+      - "ACCEPT_EULA=Y"
+      - "MSSQL_SA_PASSWORD=Abcd@1234"
+      - "TZ=Asia/Bangkok"
+    ports:
+      - "1107:1433"
+    volumes:
+      - db_data:/var/opt/mssql/data
+      - ./DAL/Data:/usr/src/app
+    working_dir: /usr/src/app
+    command: /bin/sh -c 'chmod +x ./sql_entrypoint.sh; ./sql_entrypoint.sh & /opt/mssql/bin/sqlservr;'
+
+  redis:
+    image: redis:alpine
+    restart: always
+    ports:
+      - "9000:6379"
+    volumes:
+      - redis_data:/data
+
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - "19000:8001"
+    volumes:
+      - redisinsight_data:/db
+
+  api:
+    image: api
+    environment:
+      - "TZ=Asia/Bangkok"
+    container_name: api
+    env_file:
+      - api.env
+    ports:
+      - "8000:80"
+    depends_on:
+      - sqldb
+    build:
+      context: .
+      dockerfile: API/Dockerfile
+
+  scheduler:
+    image: scheduler
+    environment:
+      - "TZ=Asia/Bangkok"
+    container_name: scheduler
+    env_file:
+      - scheduler.env
+    depends_on:
+      - sqldb
+      - api
+    build:
+      context: .
+      dockerfile: JobScheduler/Dockerfile
+
+volumes:
+  db_data:
+  redis_data:
+  redisinsight_data:

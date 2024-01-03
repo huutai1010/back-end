@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="DTOs\NotificationData\**" />
+    <Compile Remove="Helpers\**" />
+    <Compile Remove="MapperProfiles\**" />
+    <Compile Remove="Validators\**" />
+    <EmbeddedResource Remove="DTOs\NotificationData\**" />
+    <EmbeddedResource Remove="Helpers\**" />
+    <EmbeddedResource Remove="MapperProfiles\**" />
+    <EmbeddedResource Remove="Validators\**" />
+    <None Remove="DTOs\NotificationData\**" />
+    <None Remove="Helpers\**" />
+    <None Remove="MapperProfiles\**" />
+    <None Remove="Validators\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NCrontab" Version="3.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\DAL\DAL.csproj" />
+  </ItemGroup>
+
+</Project>
